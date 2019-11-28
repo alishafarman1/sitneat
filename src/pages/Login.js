@@ -3,6 +3,7 @@ import {View, Text,TextInput,TouchableOpacity} from 'react-native';
 import Styles from '../Styles';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import {resetRoute} from '../Utils';
 
 export default class Login extends Component<Props> {
     static navigationOptions = ({navigation}) => ({
@@ -26,7 +27,9 @@ export default class Login extends Component<Props> {
                 <View style={{width:"80%"}}>
                     <Input placeholder={"Email"}/>
                     <Input placeholder={"Password"} secureTextEntry={true}/>
-                    <Button>Login</Button>
+                    <Button onPress={()=>{
+                        resetRoute(this.navigation,"Home")
+                    }}>Login</Button>
                     <View style={{width:"100%",marginTop:40,marginBottom:20}}>
                         <View style={{height:1,backgroundColor:"white",width:"100%"}} />
                         <Text style={{position:"absolute",color:"white",top:-15,backgroundColor:Styles.colors.primary,alignSelf:"center",fontSize:20,paddingHorizontal:20}}>OR</Text>
