@@ -5,6 +5,8 @@ import Login from '../pages/Login';
 import SignUp from '../pages/SignUp';
 import Home from '../pages/Home';
 import Styles from '../Styles';
+import ItemDetails from '../pages/ItemDetails';
+import Cart from '../pages/Cart';
 
 const AppNavigator = createStackNavigator({
     Splash: {
@@ -19,8 +21,14 @@ const AppNavigator = createStackNavigator({
     Home: {
         screen: Home,
     },
+    ItemDetails: {
+        screen: ItemDetails,
+    },
+    Cart: {
+        screen: Cart,
+    },
 },{
-    initialRouteName:"Home",
+    //initialRouteName:"Home",
     defaultNavigationOptions:{
         headerStyle:{
             backgroundColor:Styles.colors.primary
