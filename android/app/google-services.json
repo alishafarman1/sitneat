@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "477096403406",
+    "firebase_url": "https://sitneat-598a6.firebaseio.com",
+    "project_id": "sitneat-598a6",
+    "storage_bucket": "sitneat-598a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477096403406:android:7211a77e39288306d60b9f",
+        "android_client_info": {
+          "package_name": "com.sitneat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "477096403406-bp90ei2r4q3ogrfhta3vcvi7fjv0pqt8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx1-la3zcRQzt7GiAxU93pMVX1UZMsTyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "477096403406-bp90ei2r4q3ogrfhta3vcvi7fjv0pqt8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
