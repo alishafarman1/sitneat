@@ -4,9 +4,6 @@ import Styles from '../Styles';
 import {resetRoute} from '../Utils';
 
 export default class Splash extends Component<Props> {
-    static navigationOptions = ({navigation}) => ({
-        header:null
-    });
 
     navigation;
 

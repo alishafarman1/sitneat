@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, Image, Text, View, TouchableOpacity} from 'react-native';
 import Styles from '../Styles';
+import {resetRoute} from '../Utils';
 
 const  dataSample = [
     {
@@ -49,6 +50,13 @@ const  dataSample = [
 export default class Home extends Component<Props> {
     static navigationOptions = ({navigation}) => ({
         title:"Menu",
+        headerRight:(
+            <TouchableOpacity style={{backgroundColor:"#fff",paddingHorizontal:10,paddingVertical:5,borderRadius:20,marginRight:10}} onPress={()=>{
+                resetRoute(navigation,"Splash")
+            }}>
+                <Text style={{color:Styles.colors.primary,fontWeight:"bold"}}>Logout</Text>
+            </TouchableOpacity>
+        )
     });
 
     navigation;

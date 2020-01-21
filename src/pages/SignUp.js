@@ -6,9 +6,6 @@ import Button from '../components/Button';
 import {resetRoute} from '../Utils';
 
 export default class SignUp extends Component<Props> {
-    static navigationOptions = ({navigation}) => ({
-        header:null
-    });
 
     navigation;
 

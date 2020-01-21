@@ -6,9 +6,6 @@ import Button from '../components/Button';
 import {resetRoute} from '../Utils';
 
 export default class Login extends Component<Props> {
-    static navigationOptions = ({navigation}) => ({
-        header:null
-    });
 
     navigation;
 
@@ -28,7 +25,7 @@ export default class Login extends Component<Props> {
                     <Input placeholder={"Email"}/>
                     <Input placeholder={"Password"} secureTextEntry={true}/>
                     <Button onPress={()=>{
-                        resetRoute(this.navigation,"Home")
+                        resetRoute(this.navigation,"UserApp")
                     }}>Login</Button>
                     <View style={{width:"100%",marginTop:40,marginBottom:20}}>
                         <View style={{height:1,backgroundColor:"white",width:"100%"}} />
