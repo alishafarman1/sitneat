@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View, Text,ActivityIndicator} from 'react-native';
 import Styles from '../Styles';
 import {resetRoute} from '../Utils';
+import firebase from 'react-native-firebase';
 
 export default class Splash extends Component<Props> {
 
@@ -14,8 +15,11 @@ export default class Splash extends Component<Props> {
 
 
     componentDidMount(): void {
+        //resetRoute(this.navigation,"UserApp")
+
+
         setTimeout(()=>{
-            resetRoute(this.navigation,"Login")
+            this.props.screenProps.app.bindAuthStateListener(this.navigation);
         },2000)
     }
 

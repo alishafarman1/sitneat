@@ -57,6 +57,7 @@ export default class ItemDetails extends Component<Props> {
                 <TouchableOpacity disabled={qty < 1} onPress={()=>{
                     this.props.screenProps.app.addToBasket(this.state);
                     this.navigation.goBack();
+                    this.navigation.navigate("Cart");
                 }}>
                     <View style={{backgroundColor:(qty < 1 ? "gray" : Styles.colors.primaryLight),paddingVertical:15,paddingHorizontal:15}}>
                         <Text style={{color:"white",fontSize:17,fontWeight:"bold",alignSelf:"center"}}>Add To Basket</Text>

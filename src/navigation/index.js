@@ -8,26 +8,45 @@ import Styles from '../Styles';
 import ItemDetails from '../pages/ItemDetails';
 import Cart from '../pages/Cart';
 import AdminDashboard from '../pages/AdminDashboard';
+import ManageMenu from '../pages/ManageMenu';
+import {Text, TouchableOpacity} from 'react-native';
+import Utils from '../base/Utils';
+import {resetRoute} from '../Utils';
+import React from 'react';
+import ItemForm from '../pages/ItemForm';
+import ThankYou from '../pages/ThankYou';
 
 
 const navConfigs = {
     //initialRouteName:"Home",
-    defaultNavigationOptions:{
+    defaultNavigationOptions:({navigation})=> ({
         headerStyle:{
             backgroundColor:Styles.colors.primary
         },
-        headerTintColor:"white"
-    }
+        headerTintColor:"white",
+        headerRight:(
+            <TouchableOpacity style={{backgroundColor:"#fff",paddingHorizontal:10,paddingVertical:5,borderRadius:20,marginRight:10}} onPress={()=>{
+                Utils.signOut(()=>{
+                    resetRoute(navigation,"Splash");
+                })
+            }}>
+                <Text style={{color:Styles.colors.primary,fontWeight:"bold"}}>Logout</Text>
+            </TouchableOpacity>
+        )
+    })
 };
 
 const UserNavigator = createStackNavigator({
     Home:Home,
     ItemDetails: ItemDetails,
-    Cart: Cart
+    Cart: Cart,
+    ThankYou: ThankYou,
 },navConfigs);
 
 const AdminNavigator = createStackNavigator({
     Dashboard:AdminDashboard,
+    ManageMenu:ManageMenu,
+    ItemForm:ItemForm,
 },navConfigs);
 
 const AppNavigator = createStackNavigator({
@@ -44,3 +63,4 @@ const AppNavigator = createStackNavigator({
 });
 
 export default createAppContainer(AppNavigator);
+

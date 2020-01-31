@@ -1,7 +1,8 @@
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
- *
+ *- def command = "${npx} --quiet --no-install react-native config"
+ + def command = "yarn --silent react-native config"
  * @format
  * @flow
  */
@@ -10,7 +11,11 @@ import React,{Component} from 'react';
 import {StatusBar, View} from 'react-native';
 import Nav from './navigation';
 import Styles from './Styles';
+import firebase from "react-native-firebase";
+import {resetRoute} from './Utils';
 
+
+console.disableYellowBox = true;
 class App extends Component {
     state = {basket:[]};
 
@@ -43,6 +48,21 @@ class App extends Component {
             this.setState({basket});
         }
     };
+
+    bindAuthStateListener(navigator){
+        firebase.auth().onAuthStateChanged((user)=>{
+            if(user != null){
+               let isAdmin = user.uid === "Is2Ss7AeRqd50qr6jHvSqIvMrv53";
+               if(isAdmin){
+                   resetRoute(navigator,"AdminApp");
+               }else{
+                   resetRoute(navigator,"UserApp");
+               }
+            }else{
+                resetRoute(navigator,"Login");
+            }
+        });
+    }
 
     render() {
         return (

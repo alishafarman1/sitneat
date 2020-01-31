@@ -1,64 +1,18 @@
 import React, {Component} from 'react';
-import {FlatList, Image, Text, View, TouchableOpacity} from 'react-native';
+import {FlatList, Image, Text, View, TouchableOpacity, RefreshControl} from 'react-native';
 import Styles from '../Styles';
 import {resetRoute} from '../Utils';
 import Utils from '../base/Utils';
 import firebase from "react-native-firebase";
 
-const  dataSample = [
-    {
-        id:"1",
-        image:require('../images/samosa.jpg'),
-        title:"Samoosa",
-        price:"15",
-        left:10
-    },
-    {
-        id:"2",
-        image:require('../images/roll.jpg'),
-        title:"Roll",
-        price:"15",
-        left:15
-    },
-    {
-        id:"3",
-        image:require('../images/chat.jpg'),
-        title:"Chat",
-        price:"60",
-        left:18
-    },
-    {
-        id:"4",
-        image:require('../images/panipuri.jpg'),
-        title:"Pani Puri",
-        price:"100",
-        left:5
-    },
-    {
-        id:"5",
-        image:require('../images/burger.jpg'),
-        title:"Burger",
-        price:"200",
-        left:30
-    },
-    {
-        id:"6",
-        image:require('../images/Sandwhich.jpg'),
-        title:"Sandwich",
-        price:"150",
-        left:100
-    }
-];
-export default class Home extends Component<Props> {
+export default class ManageMenu extends Component<Props> {
     static navigationOptions = ({navigation}) => ({
-        title:"Menu",
+        title:"Manage Menu",
         headerRight:(
             <TouchableOpacity style={{backgroundColor:"#fff",paddingHorizontal:10,paddingVertical:5,borderRadius:20,marginRight:10}} onPress={()=>{
-                Utils.signOut(()=>{
-                    resetRoute(navigation,"Splash");
-                })
+                navigation.navigate("ItemForm",{item:{},navTitle:"Add Menu Item"})
             }}>
-                <Text style={{color:Styles.colors.primary,fontWeight:"bold"}}>Logout</Text>
+                <Text style={{color:Styles.colors.primary,fontWeight:"bold"}}>Add Menu Item +</Text>
             </TouchableOpacity>
         )
     });
@@ -70,45 +24,100 @@ export default class Home extends Component<Props> {
     constructor(props) {
         super(props);
         this.navigation = props.navigation;
+        this.state = {items:[],isLoading:false}
     }
 
 
     componentDidMount(): void {
+        Utils.startLoading(this);
+        firebase.database().ref("menu").once("value",(snap)=> {
+            Utils.stopLoading(this);
+        },(error)=>{
+            Utils.stopLoading(this);
+        });
+        firebase.database().ref("menu").on("child_added",(snap)=> {
+            let {items} = this.state;
+            items.push(snap.val());
+            this.setState({
+                items: items,
+                isLoading: false
+            });
+        },(error)=>{
+            Utils.stopLoading(this);
+        });
 
+        firebase.database().ref("menu").on("child_changed",(snap)=>{
+                let {items} = this.state;
+                const keys = items.map((itm)=>itm.id);
+                const index = keys.indexOf(snap.key);
+                items[index] = snap.val();
+                this.setState({
+                    items:items,
+                    isLoading:false
+                });
+        },(error)=>{
+            Utils.stopLoading(this);
+        });
+
+        firebase.database().ref("menu").on("child_removed",(snap)=>{
+                let {items} = this.state;
+                const keys = items.map((itm)=>itm.id);
+                const index = keys.indexOf(snap.key);
+                items.splice(index,1);
+                this.setState({
+                    items:items,
+                    isLoading:false
+                });
+        },(error)=>{
+            Utils.stopLoading(this);
+        });
     }
 
     render() {
         const {navigate} = this.navigation;
-
+        const {items,isLoading} = this.state;
         return (
             <View style={{flex: 1,backgroundColor:"white"}}>
                 <FlatList
-                    data={dataSample}
+                    refreshControl={<RefreshControl refreshing={isLoading} />}
+                    data={items}
                     renderItem={({item,index})=>this.itemView(item,index)}
                     keyExtractor={(i)=>JSON.stringify(i)}
                     ListFooterComponent={()=>(<View style={{width:1,height:30}}/>)}
-                    ListHeaderComponent={()=>(<View style={{width:"100%",paddingHorizontal:20,paddingTop:20}}>
-                        <Text style={{color:"black",fontSize:25}}>Hi {firebase.auth().currentUser.displayName}</Text>
-                    </View>)}
                 />
-                <TouchableOpacity onPress={()=>{
-                    //navigate("Cart");
-                }} style={{position:"absolute",bottom:20,backgroundColor:Styles.colors.primary,padding:10,borderRadius:27.5,width:55,height:55,right:20,elevation:20}}>
-                    <Image source={require('../images/basket.png')} style={{width:35,height:35,tintColor:"#fff"}} resizeMode={"contain"}/>
-                </TouchableOpacity>
+                {!isLoading && items.length<=0 ? <Text style={{position:"absolute",alignSelf:"center",marginTop:"60%",fontSize:20}}>No Menu Items Right Now!</Text> : null}
             </View>
         );
     }
 
-    itemView = (data,i)=>(
-        <TouchableOpacity onPress={()=>{
-            this.navigation.navigate("ItemDetails",{item:data})
-        }} style={{marginHorizontal:12,marginTop:10,elevation:5,backgroundColor:"white",borderRadius:12,overflow:"hidden"}}>
-            <Image source={data.image} resizeMode={"cover"} style={{width:"100%",height:150}} />
-            <View style={{flexDirection:"row",position:"absolute",bottom:0,left:0,width:"100%",backgroundColor:"rgba(0,0,0,0.5)",paddingHorizontal:20,paddingVertical:5}}>
-                <Text style={{color:"#fff",fontSize:20,flex:1}}>{data.title}</Text>
-                <Text style={{color:"#fff",fontSize:17,alignSelf:"center",fontWeight:"bold"}}>Rs {data.price}</Text>
+    itemView = (data,i)=>{
+        let actionButton = (text,image,onPress)=>(
+            <TouchableOpacity onPress={onPress} style={{flexDirection:"row",backgroundColor:"white",elevation:10,margin:10,width:100,height:35,alignItems:"center",justifyContent:"center",borderRadius:17.5}}>
+                <Text style={{fontSize:16,color:Styles.colors.primary,marginRight:10,fontWeight:"bold"}}>{text}</Text>
+                <Image source={image} resizeMode={"contain"} style={{width:20,height:20,tintColor:Styles.colors.primary}} />
+            </TouchableOpacity>
+        );
+        return (
+            <View  style={{marginHorizontal:12,marginTop:10,elevation:5,backgroundColor:"white",borderRadius:12,overflow:"hidden"}}>
+                <Image source={data.image} resizeMode={"cover"} style={{width:"100%",height:150}} />
+                <View style={{flexDirection:"row",position:"absolute",bottom:0,left:0,width:"100%",backgroundColor:"rgba(0,0,0,0.5)",paddingHorizontal:20,paddingVertical:5}}>
+                    <Text style={{color:"#fff",fontSize:20,flex:1}}>{data.title}</Text>
+                       <View>
+                           <Text style={{color:"#fff",fontSize:17,alignSelf:"center",fontWeight:"bold"}}>Rs {data.price}</Text>
+                       </View>
+                </View>
+                <Text style={{color:"#fff",fontSize:17,alignSelf:"center",fontWeight:"bold",position:"absolute",left:0,margin:10,backgroundColor:"rgba(0,0,0,0.5)",padding:10}}>Stock Left : {data.left}</Text>
+                <View style={{position:"absolute",right:0}}>
+                    {actionButton("Edit",require('../images/edit.png'),()=>{
+                        this.navigation.navigate("ItemForm",{item:data,navTitle:"Edit "+data.title})
+                    })}
+                    {actionButton("Delete",require('../images/delete.png'),()=>{
+                        Utils.confirmationDialog("Delete Menu Item","Are you sure to delete "+data.title+"?",()=> {
+                            firebase.database().ref("menu").child(data.id).remove();
+                            firebase.storage().ref("menu").child(data.id+".jpg").delete();
+                        })
+                    })}
+                </View>
             </View>
-        </TouchableOpacity>
-    );
+    )};
 }
